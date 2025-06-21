@@ -26,6 +26,24 @@ app.get("/pokemon", async (req, res) => {
   }
 });
 
+// Search pokemon by name
+app.get("/pokemon/search", async (req, res) => {
+  try {
+    const name = req.query.name;
+
+    const result = await pool.query(
+      "SELECT * FROM pokemon WHERE LOWER(name) LIKE LOWER($1)",
+      [`%${name}%`]
+    );
+
+    res.json({
+      pokemon: result.rows,
+    });
+  } catch (error) {
+    res.status(500).send(error);
+  }
+});
+
 // Get pokemon by id
 app.get("/pokemon/:id", async (req, res) => {
   try {
@@ -45,8 +63,6 @@ app.get("/pokemon/:id", async (req, res) => {
     res.status(500).send(error);
   }
 });
-
-// Search pokemon by name
 
 app.listen(port, () => {
   console.log(`Running server on port ${port}`);
