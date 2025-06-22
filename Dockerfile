@@ -9,4 +9,4 @@ RUN npm install
 
 COPY api ./
 
-CMD ["node", "./api/main.ts"]
+CMD ["node", "main.ts"]

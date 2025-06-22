@@ -8,6 +8,15 @@ const port = 3000;
 
 app.use(express.json());
 
+// Get information
+app.get("/info", async (req, res) => {
+  try {
+    res.status(200).send("This a Pokemon API project created by @ethans333.");
+  } catch (error) {
+    res.status(500).send(error);
+  }
+});
+
 // Get all pokemon
 app.get("/pokemon", async (req, res) => {
   try {
