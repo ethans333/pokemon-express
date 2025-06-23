@@ -1,5 +1,5 @@
 name: Pokemon Application Deployment
-run-name: Deploy to ${{ inputs.deploy_target }} by @${{ github.actor }} 🔥
+run-name: Deploy to EC2 by @${{ github.actor }} 🔥
 on: [push]
 jobs:
   build_and_deploy_api:
