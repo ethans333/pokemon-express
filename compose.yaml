@@ -3,6 +3,10 @@ services:
     image: "ethans333/pokemon-app_api:latest"
     ports:
       - "3000:3000"
+  gui:
+    image: "ethans333/pokemon-app_gui:latest"
+    ports:
+      - "80:80"
   db:
     image: "postgres:15"
     environment:
