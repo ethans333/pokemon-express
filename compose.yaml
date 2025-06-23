@@ -7,6 +7,7 @@ services:
     image: "postgres:15"
     environment:
       POSTGRES_PASSWORD: password
+    hostname: db-service
     ports:
       - "5432:5432"
   migrate:
