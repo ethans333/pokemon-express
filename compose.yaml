@@ -9,3 +9,14 @@ services:
       POSTGRES_PASSWORD: password
     ports:
       - "5432:5432"
+  migrate:
+    image: migrate/migrate
+    volumes:
+      - ./database/migrations:./migrations
+    command: [
+      "-path", "/migrations",
+      "-database", "postgres://postgres:password@postgres:5432/pokemondb",
+      "up"
+    ]
+    depends_on:
+      - db
