@@ -8,8 +8,11 @@ import {
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input.tsx";
-import { SearchIcon, ChevronLeft, ChevronRight } from "lucide-react";
+import { SearchIcon, ChevronLeft, ChevronRight, FrownIcon } from "lucide-react";
 import { useEffect, useState } from "react";
+
+const maxPokemon = 800;
+const pokemonPerPage = 10;
 
 class Pokemon {
   id: string | null;
@@ -92,6 +95,7 @@ export default function PokemonTable() {
       data = await fetchPokemon(0);
     } else {
       data = await fetchSearchPokemon(search);
+      setPage(-1);
     }
 
     setPokemon(data);
@@ -107,7 +111,9 @@ export default function PokemonTable() {
           onClick={onLeft}
         />
         <p className="text-sm">
-          {page * 10 + 1}-{(page + 1) * 10} of 800 Pokemon
+          {page * pokemonPerPage + 1}-{(page + 1) * pokemonPerPage} of{" "}
+          {maxPokemon}
+          Pokemon
         </p>
         <ChevronRight
           size={20}
@@ -119,7 +125,7 @@ export default function PokemonTable() {
   }
 
   async function nextPage() {
-    const newPage = page + 1;
+    const newPage = Math.min(maxPokemon / pokemonPerPage, page);
     const newData = await fetchPokemon(newPage);
     setPage(newPage);
     setIsLoading(true);
@@ -200,11 +206,29 @@ export default function PokemonTable() {
               ))}
             </TableBody>
           </Table>
-          <div className="w-full mt-4 flex justify-end">
-            <PageSelector onLeft={prevPage} onRight={nextPage} />
+          <div className="w-full mt-4">
+            <div
+              className={`flex justify-center ${
+                pokemon.length != 0 && "hidden"
+              }`}
+            >
+              <NoPokemonLabel />
+            </div>
+            <div className={`flex justify-end pt-4 ${page < 0 && "hidden"}`}>
+              <PageSelector onLeft={prevPage} onRight={nextPage} />
+            </div>
           </div>
         </div>
       )}
+    </div>
+  );
+}
+
+function NoPokemonLabel() {
+  return (
+    <div className="py-10 flex gap-3 text-rose-500">
+      <FrownIcon />
+      <p className="font-semibold">No Pokemon Found</p>
     </div>
   );
 }
