@@ -112,8 +112,7 @@ export default function PokemonTable() {
         />
         <p className="text-sm">
           {page * pokemonPerPage + 1}-{(page + 1) * pokemonPerPage} of{" "}
-          {maxPokemon}
-          Pokemon
+          {maxPokemon} Pokemon
         </p>
         <ChevronRight
           size={20}
