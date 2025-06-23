@@ -1,16 +1,14 @@
 import {
   Table,
   TableBody,
-  TableCaption,
   TableCell,
   TableHead,
   TableHeader,
   TableRow,
-  TableFooter,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input.tsx";
-import { SearchIcon } from "lucide-react";
+import { SearchIcon, ChevronLeft, ChevronRight } from "lucide-react";
 import { useEffect, useState } from "react";
 
 class Pokemon {
@@ -41,8 +39,8 @@ class Pokemon {
   }
 }
 
-async function fetchPokemon(): Promise<Array<Pokemon>> {
-  const url = "http://3.87.73.87:3000/pokemon";
+async function fetchPokemon(page: number): Promise<Array<Pokemon>> {
+  const url = `http://3.87.73.87:3000/pokemon?page=${page}`;
 
   const response = await fetch(url);
   const data = await response.json();
@@ -74,11 +72,12 @@ async function fetchSearchPokemon(query: string): Promise<Array<Pokemon>> {
 export default function PokemonTable() {
   const [pokemon, setPokemon] = useState<Array<Pokemon>>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [page, setPage] = useState<number>(0);
 
   useEffect(() => {
     (async () => {
       setIsLoading(true);
-      setPokemon(await fetchPokemon());
+      setPokemon(await fetchPokemon(page));
       setIsLoading(false);
     })();
   }, []);
@@ -89,12 +88,51 @@ export default function PokemonTable() {
     setIsLoading(true);
 
     if (search == "") {
-      data = await fetchPokemon();
+      setPage(0);
+      data = await fetchPokemon(0);
     } else {
       data = await fetchSearchPokemon(search);
     }
 
     setPokemon(data);
+    setIsLoading(false);
+  }
+
+  function PageSelector({ onLeft, onRight }: { onLeft: any; onRight: any }) {
+    return (
+      <div className="flex gap-2 opacity-75">
+        <ChevronLeft
+          size={20}
+          className="cursor-pointer hover:opacity-50"
+          onClick={onLeft}
+        />
+        <p className="text-sm">
+          {page * 10 + 1}-{(page + 1) * 10} of 800 Pokemon
+        </p>
+        <ChevronRight
+          size={20}
+          className="cursor-pointer hover:opacity-50"
+          onClick={onRight}
+        />
+      </div>
+    );
+  }
+
+  async function nextPage() {
+    const newPage = page + 1;
+    const newData = await fetchPokemon(newPage);
+    setPage(newPage);
+    setIsLoading(true);
+    setPokemon(newData);
+    setIsLoading(false);
+  }
+
+  async function prevPage() {
+    const newPage = Math.max(0, page - 1);
+    const newData = await fetchPokemon(newPage);
+    setPage(newPage);
+    setIsLoading(true);
+    setPokemon(newData);
     setIsLoading(false);
   }
 
@@ -109,57 +147,63 @@ export default function PokemonTable() {
           <LoadingWheel />
         </div>
       ) : (
-        <Table>
-          <TableCaption>A list of pokemon.</TableCaption>
-          <TableHeader>
-            <TableRow>
-              <TableHead className="w-[100px]">Id</TableHead>
-              <TableHead>Name</TableHead>
-              <TableHead>Type 1</TableHead>
-              <TableHead>Type 2</TableHead>
-              <TableHead>Total</TableHead>
-              <TableHead>❤️ HP</TableHead>
-              <TableHead>💥 Attack</TableHead>
-              <TableHead>🛡️ Defense</TableHead>
-              <TableHead>💨 Speed</TableHead>
-              <TableHead>⬆️ Generation</TableHead>
-              <TableHead>🌟 Legendary</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {pokemon.map((p) => (
-              <TableRow key={p.id}>
-                <TableCell className="opacity-70 italic">{p.id}</TableCell>
-                <TableCell className="capitalize">{p.name}</TableCell>
-                <TableCell>
-                  <TypeLabel type={p.type1} />
-                </TableCell>
-                <TableCell>
-                  <TypeLabel type={p.type2} />
-                </TableCell>
-                <TableCell className="opacity-70">{String(p.total)}</TableCell>
-                <TableCell className="opacity-70">{String(p.hp)}</TableCell>
-                <TableCell className="opacity-70">{String(p.attack)}</TableCell>
-                <TableCell className="opacity-70">
-                  {String(p.defense)}
-                </TableCell>
-                <TableCell className="opacity-70">{String(p.speed)}</TableCell>
-                <TableCell className="opacity-70">
-                  {String(p.generation)}
-                </TableCell>
-                <TableCell className="capitalize">
-                  {String(p.legendary)}
-                </TableCell>
+        <div>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead className="w-[100px]">Id</TableHead>
+                <TableHead>Name</TableHead>
+                <TableHead>Type 1</TableHead>
+                <TableHead>Type 2</TableHead>
+                <TableHead>Total</TableHead>
+                <TableHead>❤️ HP</TableHead>
+                <TableHead>💥 Attack</TableHead>
+                <TableHead>🛡️ Defense</TableHead>
+                <TableHead>💨 Speed</TableHead>
+                <TableHead>⬆️ Generation</TableHead>
+                <TableHead>🌟 Legendary</TableHead>
               </TableRow>
-            ))}
-          </TableBody>
-          <TableFooter>
-            <TableRow>
-              <TableCell colSpan={10}>Count</TableCell>
-              <TableCell className="text-right">{pokemon.length}</TableCell>
-            </TableRow>
-          </TableFooter>
-        </Table>
+            </TableHeader>
+            <TableBody>
+              {pokemon.map((p) => (
+                <TableRow key={p.id}>
+                  <TableCell className="opacity-70 italic">{p.id}</TableCell>
+                  <TableCell className="capitalize max-w-[100px] truncate">
+                    {p.name}
+                  </TableCell>
+                  <TableCell>
+                    <TypeLabel type={p.type1} />
+                  </TableCell>
+                  <TableCell>
+                    <TypeLabel type={p.type2} />
+                  </TableCell>
+                  <TableCell className="opacity-70">
+                    {String(p.total)}
+                  </TableCell>
+                  <TableCell className="opacity-70">{String(p.hp)}</TableCell>
+                  <TableCell className="opacity-70">
+                    {String(p.attack)}
+                  </TableCell>
+                  <TableCell className="opacity-70">
+                    {String(p.defense)}
+                  </TableCell>
+                  <TableCell className="opacity-70">
+                    {String(p.speed)}
+                  </TableCell>
+                  <TableCell className="opacity-70">
+                    {String(p.generation)}
+                  </TableCell>
+                  <TableCell className="capitalize">
+                    {String(p.legendary)}
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+          <div className="w-full mt-4 flex justify-end">
+            <PageSelector onLeft={prevPage} onRight={nextPage} />
+          </div>
+        </div>
       )}
     </div>
   );

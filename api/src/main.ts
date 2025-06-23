@@ -19,7 +19,7 @@ app.get("/pokemon", async (req, res) => {
       return res.status(400).send("Invalid page number.");
     }
 
-    const limit = 20;
+    const limit = 10;
     const offset = limit * page;
 
     const result = await pool.query(
