@@ -1,7 +1,7 @@
 import express from "express";
 
 import { pool } from "./db.ts";
-import type { Pokemon } from "../types/Pokemon.ts";
+import type { Pokemon } from "./types/Pokemon.ts";
 
 const app = express();
 const port = 3000;

@@ -7,6 +7,6 @@ COPY package-lock.json ./
 
 RUN npm install
 
-COPY api ./
+COPY src ./
 
 CMD ["node", "main.ts"]
