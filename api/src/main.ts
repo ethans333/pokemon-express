@@ -10,19 +10,22 @@ const port = 3000;
 app.use(express.json());
 app.use(cors());
 
-// Get information
-app.get("/info", async (req, res) => {
-  try {
-    res.status(200).send("This a Pokemon API project created by @ethans333.");
-  } catch (error) {
-    res.status(500).send(error);
-  }
-});
-
 // Get all pokemon
 app.get("/pokemon", async (req, res) => {
   try {
-    const result = await pool.query("SELECT * FROM pokemon");
+    const page = req.query.page;
+
+    if (!page || page < 0) {
+      return res.status(400).send("Invalid page number.");
+    }
+
+    const limit = 20;
+    const offset = limit * page;
+
+    const result = await pool.query(
+      "SELECT * FROM pokemon ORDER BY id LIMIT $1 OFFSET $2",
+      [limit, offset]
+    );
     const pokemon: Array<Pokemon> = result.rows;
 
     res.status(200).json({
