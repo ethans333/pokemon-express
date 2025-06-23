@@ -124,7 +124,7 @@ export default function PokemonTable() {
   }
 
   async function nextPage() {
-    const newPage = Math.min(maxPokemon / pokemonPerPage, page);
+    const newPage = Math.min(maxPokemon / pokemonPerPage, page + 1);
     const newData = await fetchPokemon(newPage);
     setPage(newPage);
     setIsLoading(true);
