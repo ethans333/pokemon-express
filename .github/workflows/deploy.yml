@@ -13,6 +13,7 @@ jobs:
       - name: Build and push
         uses: docker/build-push-action@v6
         with:
+          context: ./api/src
           push: true
           tags: ethans333/pokemon-app_api:latest
       - name: Copy compose file
