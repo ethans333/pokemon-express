@@ -1,6 +1,6 @@
 FROM node:24 AS builder
 
-WORKDIR /usr/local/app .
+WORKDIR /usr/local/app
 COPY . .
 RUN npm install
 RUN npm run build
