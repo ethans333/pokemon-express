@@ -5,6 +5,8 @@ jobs:
   build_and_deploy_api:
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
       - name: Login to Docker Hub
         uses: docker/login-action@v3
         with:
@@ -14,6 +16,7 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           context: ./api
+          file: ./api/Dockerfile
           push: true
           tags: ethans333/pokemon-app_api:latest
       - name: Copy compose file
@@ -31,4 +34,6 @@ jobs:
           username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.EC2_KEY }}
           script: |
-            sudo docker compose up --pull always
+            sudo docker compose pull
+            sudo docker compose up -d --remove-orphans
+            sudo docker image prune -f
