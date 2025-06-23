@@ -13,7 +13,7 @@ services:
   migrate:
     image: migrate/migrate
     volumes:
-      - ./database/migrations:./migrations
+      - ./database/migrations:/migrations
     command: [
       "-path", "/migrations",
       "-database", "postgres://postgres:password@postgres:5432/pokemondb",
