@@ -11,6 +11,14 @@ What I found to be the most interesting technology of this experience, was the E
 <img src="./misc/images/gui-ss.png" width="650px" />
 <img src="./misc/images/diagram.jpg" width="650px" />
 
+## Tech Stack
+
+| Category    | Technology                      |
+| ----------- | ------------------------------- |
+| **GUI**     | React, Vite, ShadCN, Tailwind   |
+| **Backend** | Node.JS, Express, PostgreSQL    |
+| **DevOps**  | AWS EC2, Docker, Github Actions |
+
 ## CI/CD Pipeline
 
 Let's start with the CI/CD pipeline. The entire things was configured with the yaml language and leveraged the sophisticated github actions.
